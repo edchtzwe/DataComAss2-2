@@ -50,9 +50,19 @@ public class TCPClient {
         }
         fileName = args[2];
         
-        //set up connection
-        socket = new Socket(IP, port);
+        while(socket == null){
+            try{
+                //set up connection
+                socket = new Socket(IP, port);
+            }
+            catch(SocketException e){
+                System.out.println(e.toString());
+                socket = null;
+            }
+        }        
         
+        //if the socket has been successfuly opened, there should be no reason
+        //any exception will be thrown at this point.
         //get the stream that leads to the server
         ostream = new DataOutputStream(socket.getOutputStream());
         
@@ -65,8 +75,16 @@ public class TCPClient {
         //get stream to server
         istream = socket.getInputStream();
         
-        //stream to output file
-        ofstream = new FileOutputStream(fileName);
+        while(ofstream == null){
+            try{
+                //stream to output file
+                ofstream = new FileOutputStream(fileName);
+            }
+            catch(FileNotFoundException e){
+                System.out.println(e.toString());
+                ofstream = null;
+            }
+        }
         
         //stream to write to output file
         bostream = new BufferedOutputStream(ofstream);
