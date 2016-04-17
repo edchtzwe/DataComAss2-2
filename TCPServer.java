@@ -34,8 +34,15 @@ public class TCPServer {
     public static void main(String[] args) throws IOException
     {
         //setup a server exclusive socket and tie it to port 1234, this is to be fed to the client program.
-        
-        serverSocket = new ServerSocket(1234);
+        while(serverSocket == null){
+            try{
+              serverSocket = new ServerSocket(1234);
+            }
+            catch(IllegalArgumentException e){
+                System.out.println(e.toString());
+                serverSocket = null;
+            }
+        }
 
         while(true){
             //accept a connection from a client
@@ -43,8 +50,16 @@ public class TCPServer {
             socket = serverSocket.accept();
             System.out.println("Connected to client");
 
-            //get the request from the client and process it
-            distream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            while(distream == null){
+                try{
+                    //get the request from the client and process it
+                    distream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+                }
+                catch(IOException e){
+                    System.out.println(e.toString());
+                    distream = null;
+                }
+            }
                         
             //split the file into tokens, the 2nd item is the file name *1st item is "Send"*
             String clientIn = distream.readUTF();
@@ -53,15 +68,14 @@ public class TCPServer {
            
             System.out.println(fileName);
            
-            
             //open a channel to read the file
             theFile = new File(fileName);
+
             
             //set up a data holder to hold the data from the file
             odata = new byte[(int) theFile.length()];
             
-            //read the bytes from the file into the data holder            
-                
+            //read the bytes from the file into the data holder                            
             bistream = new BufferedInputStream(new FileInputStream(theFile));
             
             
