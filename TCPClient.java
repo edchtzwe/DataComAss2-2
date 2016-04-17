@@ -22,7 +22,7 @@ public class TCPClient {
     
     //vars for cmd line args
     static String IP = null;
-    static int port = 1234;
+    static int port = 0;
     static String fileName = null;    
     
     //streams for data transfer
@@ -39,7 +39,15 @@ public class TCPClient {
     {
         //initialize variables with cmd line args
         IP = args[0];
-        port = Integer.parseInt(args[1]);
+        while(port == 0){
+            try{
+                port = Integer.parseInt(args[1]);
+            }
+            catch(NumberFormatException e){
+                System.out.println(e.toString());
+                port = 0;
+            }
+        }
         fileName = args[2];
         
         //set up connection
